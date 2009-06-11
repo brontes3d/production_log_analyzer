@@ -269,7 +269,7 @@ Jan 03 12:24:24 duo2 rails[4277]: Completed in 0.00112 (896 reqs/sec) | DB: 0.00
 
   def test_class_parse_multi
     entries = []
-    File.open "#{File.dirname(__FILE__)}/test.syslog.log" do |fp|
+    File.open "#{File.dirname(__FILE__)}/test_syslogs/test.syslog.log" do |fp|
       LogParser.parse fp do |entry|
         entries << entry
       end
@@ -289,7 +289,7 @@ Jan 03 12:24:24 duo2 rails[4277]: Completed in 0.00112 (896 reqs/sec) | DB: 0.00
 
   def test_class_parse_0_14_x
     entries = []
-    File.open "#{File.dirname(__FILE__)}/test.syslog.0.14.x.log" do |fp|
+    File.open "#{File.dirname(__FILE__)}/test_syslogs/test.syslog.0.14.x.log" do |fp|
       LogParser.parse fp do |entry|
         entries << entry
       end

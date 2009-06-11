@@ -77,12 +77,12 @@ end
 class TestAnalyzer < Test::Unit::TestCase
 
   def setup
-    @analyzer = Analyzer.new "#{File.dirname(__FILE__)}/test.syslog.log"
+    @analyzer = Analyzer.new "#{File.dirname(__FILE__)}/test_syslogs/test.syslog.log"
     @analyzer.process
   end
 
   def test_self_email
-    email = Analyzer.email("#{File.dirname(__FILE__)}/test.syslog.log", 'devnull@robotcoop.com',
+    email = Analyzer.email("#{File.dirname(__FILE__)}/test_syslogs/test.syslog.log", 'devnull@robotcoop.com',
                            nil, 1)
     expected = <<-EOF
 Subject: pl_analyze
@@ -187,7 +187,7 @@ EOF
   end
 
   def test_empty_syslog
-    analyzer = Analyzer.new "#{File.dirname(__FILE__)}/test.syslog.empty.log"
+    analyzer = Analyzer.new "#{File.dirname(__FILE__)}/test_syslogs/test.syslog.empty.log"
     assert_nothing_raised do
       analyzer.process
       analyzer.report(1)
@@ -196,7 +196,7 @@ EOF
   end
 
   def test_logfile_name
-    assert_equal "#{File.dirname(__FILE__)}/test.syslog.log", @analyzer.logfile_name
+    assert_equal "#{File.dirname(__FILE__)}/test_syslogs/test.syslog.log", @analyzer.logfile_name
   end
 
   def test_longest_request_name
@@ -228,7 +228,7 @@ EOF
   end
 
   def test_pad_request_name_short
-    analyzer = Analyzer.new "#{File.dirname(__FILE__)}/test.syslog.1.2.shortname.log"
+    analyzer = Analyzer.new "#{File.dirname(__FILE__)}/test_syslogs/test.syslog.1.2.shortname.log"
     analyzer.process
     longer_request_name_value = " " * (analyzer.longest_request_name + 1)
     assert_nothing_raised do

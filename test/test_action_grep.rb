@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/test_helper'
 class TestActionGrep < Test::Unit::TestCase
 
   def setup
-    @syslog_file_name = File.expand_path(File.join(File.dirname(__FILE__),
+    @syslog_file_name = File.expand_path(File.join(File.dirname(__FILE__), 'test_syslogs',
                                                    'test.syslog.log'))
   end
 
