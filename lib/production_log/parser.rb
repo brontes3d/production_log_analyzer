@@ -8,7 +8,18 @@
 # to group all the log output of a single request.  You must use SyslogLogger.
 
 module LogParser
-
+  
+  def self.syslog_mode?
+    @syslog_mode    
+  end
+  
+  def self.syslog_mode!
+    @syslog_mode = true
+  end
+  def self.vanilla_mode!
+    @syslog_mode = false
+  end
+  
   ##
   # LogEntry contains a summary of log data for a single request.
 
@@ -149,6 +160,18 @@ module LogParser
 
   end
 
+  def self.extract_bucket_and_data(line)
+    if LogParser.syslog_mode?
+      line =~ / ([^ ]+) ([^ ]+)\[(\d+)\]: (.*)/
+      return nil if $2.nil? or $2 == 'newsyslog'
+      bucket = [$1, $2, $3].join '-'
+      data = $4
+      return [bucket, data]
+    else
+      return ["(none)", line]
+    end    
+  end
+
   ##
   # Parses IO stream +stream+, creating a LogEntry for each recognizable log
   # entry.
@@ -159,13 +182,11 @@ module LogParser
   def self.parse(stream) # :yields: log_entry
     buckets = Hash.new { |h,k| h[k] = [] }
     comp_count = Hash.new 0
-
+    
     stream.each_line do |line|
-      line =~ / ([^ ]+) ([^ ]+)\[(\d+)\]: (.*)/
-      next if $2.nil? or $2 == 'newsyslog'
-      bucket = [$1, $2, $3].join '-'
-      data = $4
-
+      bucket, data = LogParser.extract_bucket_and_data(line)
+      next if !bucket
+      
       buckets[bucket] << data
 
       case data
@@ -176,7 +197,6 @@ module LogParser
       when /^Completed/ then
         next unless comp_count[bucket] == 0
         entry = buckets.delete bucket
-#        next unless entry.any? { |l| l =~ /^Processing/ }
         yield LogEntry.new(entry)
       end
     end

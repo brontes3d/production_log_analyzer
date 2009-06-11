@@ -1,0 +1,7 @@
+Goal Load (0.002112)   SELECT g.*, gs.score as score FROM goals g, goal_similarities gs WHERE g.id = gs.similar_goal_id AND g.num_active_people > 0 AND gs.goal_similarity_type_id = 1 AND gs.goal_id = 59133 ORDER BY score DESC LIMIT 3
+Tag Load (0.001527)   SELECT tags.*, count(*) as num_goals FROM tags_teams, tags, teams WHERE tags_teams.tag_id = tags.id AND tags_teams.team_id = teams.id AND teams.num_members > 0 AND teams.goal_id = 59133 GROUP BY tags.id ORDER BY num_goals DESC LIMIT 5
+Rendering things/view within layouts/default
+Person Load (0.001884)   SELECT * FROM people WHERE id = 10519 LIMIT 1
+Person Load (0.001159)   SELECT * FROM people WHERE id = 10519 LIMIT 1
+Rendering layouts/default (200 OK)
+Completed in 0.300741 (3 reqs/sec) | Rendering: 0.049924 (16%) | DB: 0.092428 (30%)

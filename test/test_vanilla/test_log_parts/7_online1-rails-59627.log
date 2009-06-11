@@ -1,0 +1,70 @@
+Processing ThingsController#view (for 67.18.200.5 at Mon Mar 07 00:00:29 CST 2005)
+Parameters: {:id=>"19986", :action=>"view", :"things/view/19986.html/view/19986"=>nil, :controller=>"things"}
+Cookie set: auth=STUFF; path=/; expires=Thu, 05 Mar 2015 06:00:29 GMT
+Cookie set: ubid=STUFF; path=/; expires=Thu, 05 Mar 2015 06:00:29 GMT
+Browser Load (0.028144)   SELECT * FROM browsers WHERE ubid = 'STUFF' LIMIT 1
+Goal Load (0.001371)   SELECT * FROM goals WHERE id = '19986' LIMIT 1
+TeamMember Load (0.014705)   SELECT * FROM team_members WHERE goal_id = 19986 AND active_member = 1 AND goal_is_complete = 1 AND goal_is_complete = '1' ORDER BY num_entries DESC, updated_date DESC LIMIT 3
+TeamMember Load (0.002019)   SELECT * FROM team_members WHERE goal_id = 19986 AND active_member = 1 AND goal_is_complete = 0 AND goal_is_complete = '0' ORDER BY num_entries DESC, updated_date DESC LIMIT 10
+Entry Load (0.005880)   SELECT e.* FROM entries e, teams t WHERE e.team_id = t.id AND t.goal_id = 19986 AND e.active = 1 ORDER BY e.id DESC LIMIT 10
+Entry Count (0.001063)   SELECT count(*) as num_entries FROM entries e, teams t WHERE e.team_id = t.id AND t.goal_id = 19986 AND e.active = 1 AND e.active = 1 
+TeamMember Count (0.015829)   SELECT count(*) as count FROM team_members WHERE worth_it = 1 AND goal_is_complete = 1 AND active_member = 1 AND goal_id = 19986
+TeamMember Count (0.000884)   SELECT count(*) as count FROM team_members WHERE (worth_it <> 1 or worth_it is null) AND goal_is_complete = 1 AND active_member = 1 AND goal_id = 19986
+TeamMember Count (0.000809)   SELECT count(*) as count FROM team_members WHERE help_others = 1 AND goal_is_complete = 1 AND active_member = 1 AND goal_id = 19986
+Goal Load (0.002577)   SELECT g.*, gs.score as score FROM goals g, goal_similarities gs WHERE g.id = gs.similar_goal_id AND g.num_active_people > 0 AND gs.goal_similarity_type_id = 1 AND gs.goal_id = 19986 ORDER BY score DESC LIMIT 3
+Tag Load (0.002195)   SELECT tags.*, count(*) as num_goals FROM tags_teams, tags, teams WHERE tags_teams.tag_id = tags.id AND tags_teams.team_id = teams.id AND teams.num_members > 0 AND teams.goal_id = 19986 GROUP BY tags.id ORDER BY num_goals DESC LIMIT 5
+Rendering things/view within layouts/default
+Person Load (0.002223)   SELECT * FROM people WHERE id = 1694 LIMIT 1
+Person Load (0.090841)   SELECT * FROM people WHERE id = 4350 LIMIT 1
+ProfileImage Load (0.001119)   SELECT * FROM profile_images WHERE id = 2322 LIMIT 1
+City Load (0.000659)   SELECT * FROM cities WHERE id = 819 LIMIT 1
+Person Load (0.001279)   SELECT * FROM people WHERE id = 1694 LIMIT 1
+ProfileImage Load (0.001170)   SELECT * FROM profile_images WHERE id = 1945 LIMIT 1
+Rendering layouts/default (200 OK)
+Completed in 0.491760 (2 reqs/sec) | Rendering: 0.197126 (40%) | DB: 0.172767 (35%)
+Processing PeopleController#progress (for 220.255.60.111; 165.21.154.158 at Mon Mar 07 00:00:30 CST 2005)
+Parameters: {:id=>"swirlygirl", :on=>"35926", :action=>"progress", :"people/progress/swirlygirl/35926.html/progress/swirlygirl/35926"=>nil, :controller=>"people"}
+Browser Load (0.000760)   SELECT * FROM browsers WHERE ubid = 'STUFF' LIMIT 1
+Person Load (0.001974)   SELECT * FROM people WHERE username = 'swirlygirl' LIMIT 1
+Team Load (0.001060)   SELECT * FROM teams WHERE id = '35926' LIMIT 1
+TeamMember Load (0.001061)   SELECT * FROM team_members WHERE team_id = 35926 AND active_member = 1 
+Entry Load (0.004121)   SELECT * FROM entries WHERE team_id = 35926 AND person_id = 3357 AND active = 1 ORDER BY created_date DESC LIMIT 0, 20
+Tag Load (0.001446)   SELECT t.*, j.* FROM tags_teams j, tags t WHERE t.id = j.tag_id AND j.team_id = 35926 ORDER BY t.id
+Goal Load (0.000904)   SELECT * FROM goals WHERE id = 225 LIMIT 1
+Tag Load (0.162564)   SELECT tags.*, count(*) as num_goals FROM tags_teams, tags, teams WHERE tags_teams.tag_id = tags.id AND tags_teams.team_id = teams.id AND teams.num_members > 0 AND teams.goal_id = 225 GROUP BY tags.id ORDER BY num_goals DESC LIMIT 5
+Goal Load (0.002303)   SELECT g.*, gs.score as score FROM goals g, goal_similarities gs WHERE g.id = gs.similar_goal_id AND g.num_active_people > 0 AND gs.goal_similarity_type_id = 1 AND gs.goal_id = 225 ORDER BY score DESC LIMIT 3
+TeamMember Count (0.000653)   SELECT count(*) as count FROM team_members WHERE worth_it = 1 AND goal_is_complete = 1 AND active_member = 1 AND goal_id = 225
+TeamMember Count (0.000800)   SELECT count(*) as count FROM team_members WHERE (worth_it <> 1 or worth_it is null) AND goal_is_complete = 1 AND active_member = 1 AND goal_id = 225
+TeamMember Count (0.014575)   SELECT count(*) as count FROM team_members WHERE help_others = 1 AND goal_is_complete = 1 AND active_member = 1 AND goal_id = 225
+TeamMember Load (0.116729)   SELECT * FROM team_members WHERE goal_id = 225 AND active_member = 1 AND goal_is_complete = 1 AND person_id <> '3357' ORDER BY updated_date DESC LIMIT 3
+Rendering people/progress within layouts/default
+ProfileImage Load (0.021914)   SELECT * FROM profile_images WHERE id = 1770 LIMIT 1
+Person Load (0.001863)   SELECT * FROM people WHERE id = 6731 LIMIT 1
+ProfileImage Load (0.090583)   SELECT * FROM profile_images WHERE id = 6434 LIMIT 1
+Team Load (0.001336)   SELECT * FROM teams WHERE id = 79140 LIMIT 1
+Person Load (0.001677)   SELECT * FROM people WHERE id = 660 LIMIT 1
+ProfileImage Load (0.001106)   SELECT * FROM profile_images WHERE id = 370 LIMIT 1
+Team Load (0.001231)   SELECT * FROM teams WHERE id = 15523 LIMIT 1
+Person Load (0.001581)   SELECT * FROM people WHERE id = 1900 LIMIT 1
+ProfileImage Load (0.001111)   SELECT * FROM profile_images WHERE id = 3207 LIMIT 1
+Team Load (0.001221)   SELECT * FROM teams WHERE id = 37202 LIMIT 1
+TeamMember Load (0.379744)   SELECT * FROM team_members WHERE goal_id = 225 AND active_member = 1 AND goal_is_complete = 1 
+Goal Load (0.005007)   SELECT * FROM goals WHERE id = 225 LIMIT 1
+Cheer Load (0.004291)   SELECT * FROM cheers WHERE entity_id = 36073 AND entity_type_id = 4 
+Person Load (0.008794)   SELECT * FROM people WHERE id = 3357 LIMIT 1
+Rendering layouts/default (200 OK)
+Completed in 0.977398 (1 reqs/sec) | Rendering: 0.604444 (61%) | DB: 0.830409 (84%)
+Processing TeamsController#progress (for 220.255.60.111; 165.21.154.137 at Mon Mar 07 00:00:32 CST 2005)
+Parameters: {:id=>"35926", :action=>"progress", :"teams/progress/35926.html/progress/35926"=>nil, :controller=>"teams"}
+Browser Load (0.001007)   SELECT * FROM browsers WHERE ubid = 'STUFF' LIMIT 1
+Team Load (0.000973)   SELECT * FROM teams WHERE id = '35926' LIMIT 1
+Entry Load (0.001138)   SELECT * FROM entries WHERE team_id = 35926 AND active = 1 
+TeamMember Load (0.001781)   SELECT * FROM team_members WHERE team_id = 35926 AND active_member = 1 
+Person Load (0.030966)   SELECT * FROM people WHERE id = 3357 LIMIT 1
+Redirected to http://www.43things.com/people/progress/swirlygirl/35926
+Goal Load (0.000835)   SELECT * FROM goals WHERE id = 225 LIMIT 1
+Goal Load (0.009688)   SELECT g.*, gs.score as score FROM goals g, goal_similarities gs WHERE g.id = gs.similar_goal_id AND g.num_active_people > 0 AND gs.goal_similarity_type_id = 1 AND gs.goal_id = 225 ORDER BY score DESC LIMIT 3
+TeamMember Count (0.007285)   SELECT count(*) as count FROM team_members WHERE worth_it = 1 AND goal_is_complete = 1 AND active_member = 1 AND goal_id = 225
+TeamMember Count (0.095106)   SELECT count(*) as count FROM team_members WHERE (worth_it <> 1 or worth_it is null) AND goal_is_complete = 1 AND active_member = 1 AND goal_id = 225
+TeamMember Count (0.000578)   SELECT count(*) as count FROM team_members WHERE help_others = 1 AND goal_is_complete = 1 AND active_member = 1 AND goal_id = 225
+Completed in 0.211973 (4 reqs/sec) | DB: 0.149357 (70%)

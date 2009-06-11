@@ -1,0 +1,32 @@
+Processing TeamsController#progress (for 220.255.60.111; 165.21.154.137 at Mon Mar 07 00:00:29 CST 2005)
+Parameters: {:id=>"35926", :action=>"progress", :"teams/progress/35926.html/progress/35926"=>nil, :controller=>"teams"}
+Browser Load (0.204679)   SELECT * FROM browsers WHERE ubid = 'STUFF' LIMIT 1
+Team Load (0.001341)   SELECT * FROM teams WHERE id = '35926' LIMIT 1
+Entry Load (0.122496)   SELECT * FROM entries WHERE team_id = 35926 AND active = 1 
+TeamMember Load (0.001972)   SELECT * FROM team_members WHERE team_id = 35926 AND active_member = 1 
+Person Load (0.004097)   SELECT * FROM people WHERE id = 3357 LIMIT 1
+Redirected to http://www.43things.com/people/progress/swirlygirl/35926
+Goal Load (0.001213)   SELECT * FROM goals WHERE id = 225 LIMIT 1
+Goal Load (0.002178)   SELECT g.*, gs.score as score FROM goals g, goal_similarities gs WHERE g.id = gs.similar_goal_id AND g.num_active_people > 0 AND gs.goal_similarity_type_id = 1 AND gs.goal_id = 225 ORDER BY score DESC LIMIT 3
+TeamMember Count (0.558625)   SELECT count(*) as count FROM team_members WHERE worth_it = 1 AND goal_is_complete = 1 AND active_member = 1 AND goal_id = 225
+TeamMember Count (0.135848)   SELECT count(*) as count FROM team_members WHERE (worth_it <> 1 or worth_it is null) AND goal_is_complete = 1 AND active_member = 1 AND goal_id = 225
+TeamMember Count (0.111128)   SELECT count(*) as count FROM team_members WHERE help_others = 1 AND goal_is_complete = 1 AND active_member = 1 AND goal_id = 225
+Completed in 1.469788 (0 reqs/sec) | DB: 1.143577 (77%)
+Processing PeopleController#view (for 67.18.200.5 at Mon Mar 07 00:00:31 CST 2005)
+Parameters: {:id=>"elizabeth", :action=>"view", :"people/view/elizabeth.html/view/elizabeth"=>nil, :controller=>"people"}
+Person Load (0.012043)   SELECT * FROM people WHERE id = 2077 LIMIT 1
+Person Load (0.005866)   SELECT * FROM people WHERE username = 'elizabeth' AND active = '1' LIMIT 1
+ProfileImage Load (0.007170)   SELECT * FROM profile_images WHERE id = 2153 LIMIT 1
+TeamMember Load (0.011367)   SELECT * FROM team_members WHERE person_id = 4042 AND active_member = '1' 
+Goal Load (0.007064)   SELECT g.* FROM goals g, team_members tm WHERE g.id = tm.goal_id AND tm.person_id = 4042 AND tm.active_member <> 0
+Team Load (0.007723)   SELECT t.* FROM teams t, team_members tm WHERE t.id = tm.team_id AND goal_is_complete = 0 AND active_member != 0 AND tm.person_id = 4042 ORDER BY sort_order, tm.joined_date
+Team Load (0.007425)   SELECT t.* FROM teams t, team_members tm WHERE t.id = tm.team_id AND goal_is_complete = '1' AND active_member != '0' AND tm.person_id = 4042 ORDER BY tm.updated_date DESC LIMIT 10 
+Entry Load (0.005561)   SELECT e.* FROM entries e, team_members tm, (SELECT team_id, max(id) recent_id FROM entries WHERE active <> 0 AND person_id = 4042 GROUP BY team_id) recent_entries WHERE e.id = recent_entries.recent_id AND tm.person_id = e.person_id AND tm.team_id = e.team_id AND tm.active_member <> 0
+Rendering people/view within layouts/default
+FlickrPhoto Load (0.001567)   SELECT * FROM flickr_photos WHERE person_id = 4042 
+ProfileImage Load (0.013853)   SELECT * FROM profile_images WHERE id = 2153 LIMIT 1
+City Load (0.000694)   SELECT * FROM cities WHERE id = 5 LIMIT 1
+TeamMember Count (0.006965)   SELECT COUNT(*) FROM team_members WHERE active_member = 1 and goal_is_complete = 1 and person_id = 4042 
+Person Load (0.101821)   SELECT p.*, count(*) as num_teams_in_common FROM people p, team_members tms, team_members tmp WHERE tmp.person_id = p.id AND tms.team_id = tmp.team_id AND tms.person_id = 4042 AND tms.active_member <> 0 AND tms.goal_is_complete = 0 AND tmp.person_id <> 4042 AND tmp.active_member <> 0 AND tmp.goal_is_complete = 0 GROUP BY p.id ORDER BY num_teams_in_common DESC, p.last_name
+Rendering layouts/default (200 OK)
+Completed in 0.360210 (2 reqs/sec) | Rendering: 0.277921 (77%) | DB: 0.189119 (52%)

@@ -2,19 +2,25 @@ require File.dirname(__FILE__) + '/test_helper'
 
 class TestActionGrep < TestTwice
 
-  def setup
-    @syslog_file_name = File.expand_path(File.join(File.dirname(__FILE__), 'test_syslogs',
-                                                   'test.syslog.log'))
-  end
-
-  define_method :test_module_grep do
+  twice_test :test_module_grep do
     begin
       old_stdout = $stdout.dup
       stdout = StringIO.new
       $stdout = stdout
-
-      ActionGrep.grep 'RssController', @syslog_file_name
-
+      
+      if test_sys_log_style?
+        @syslog_file_name = File.expand_path(File.join(File.dirname(__FILE__), 'test_syslogs',
+                                                       'test.syslog.log'))
+        ActionGrep.grep 'RssController', @syslog_file_name
+      else
+        logs_dir = File.expand_path(File.join(File.dirname(__FILE__), 'test_vanilla','test_log_parts'))
+        Dir.new(logs_dir).each do |file|
+          unless file.to_s[0,1] == "."
+            ActionGrep.grep 'RssController', File.join(logs_dir, file)       
+          end
+        end
+      end
+      
       stdout.rewind
 
       lines = stdout.readlines
@@ -26,7 +32,7 @@ class TestActionGrep < TestTwice
     end
   end
 
-  define_method :test_module_grep_arguments do
+  twice_test :test_module_grep_arguments do
     begin
       file = Tempfile.new File.basename(__FILE__)
 

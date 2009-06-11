@@ -16,10 +16,8 @@ class << ActionGrep
 
     File.open file_name do |fp|
       fp.each_line do |line|
-        line =~ / ([^ ]+) ([^ ]+)\[(\d+)\]: (.*)/
-        next if $2.nil? or $2 == 'newsyslog'
-        bucket = [$1, $2, $3].join '-'
-        data = $4
+        bucket, data = LogParser.extract_bucket_and_data(line)
+        next if !bucket
 
         buckets[bucket] << line
 
@@ -31,7 +29,7 @@ class << ActionGrep
         when /^Completed/ then
           next unless comp_count[bucket] == 0
           action = buckets.delete bucket
-          next unless action.any? { |l| l =~ /: Processing #{action_name}/ }
+          next unless action.any? { |l| l =~ /Processing #{action_name}/ }
           puts action.join
         end
       end

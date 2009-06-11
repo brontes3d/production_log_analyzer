@@ -1,0 +1,38 @@
+Processing PeopleController#view (for 67.18.200.5 at Mon Mar 07 00:00:28 CST 2005)
+Parameters: {:id=>"denstat", :action=>"view", :controller=>"people", :"people/view/denstat.html/view/denstat"=>nil}
+Cookie set: auth=STUFF; path=/; expires=Thu, 05 Mar 2015 06:00:28 GMT
+Cookie set: ubid=STUFF; path=/; expires=Thu, 05 Mar 2015 06:00:28 GMT
+Browser Load (0.003869)   SELECT * FROM browsers WHERE ubid = 'STUFF' LIMIT 1
+Person Load (0.088823)   SELECT * FROM people WHERE username = 'denstat' AND active = '1' LIMIT 1
+ProfileImage Load (0.001174)   SELECT * FROM profile_images WHERE id = 2031 LIMIT 1
+TeamMember Load (0.004332)   SELECT * FROM team_members WHERE person_id = 2693 AND active_member = '1' 
+Goal Load (0.010591)   SELECT g.* FROM goals g, team_members tm WHERE g.id = tm.goal_id AND tm.person_id = 2693 AND tm.active_member <> 0
+Team Load (0.005076)   SELECT t.* FROM teams t, team_members tm WHERE t.id = tm.team_id AND goal_is_complete = 0 AND active_member != 0 AND tm.person_id = 2693 ORDER BY sort_order, tm.joined_date
+Team Load (0.003954)   SELECT t.* FROM teams t, team_members tm WHERE t.id = tm.team_id AND goal_is_complete = '1' AND active_member != '0' AND tm.person_id = 2693 ORDER BY tm.updated_date DESC LIMIT 10 
+Entry Load (0.010843)   SELECT e.* FROM entries e, team_members tm, (SELECT team_id, max(id) recent_id FROM entries WHERE active <> 0 AND person_id = 2693 GROUP BY team_id) recent_entries WHERE e.id = recent_entries.recent_id AND tm.person_id = e.person_id AND tm.team_id = e.team_id AND tm.active_member <> 0
+Rendering people/view within layouts/default
+ProfileImage Load (0.001088)   SELECT * FROM profile_images WHERE id = 2031 LIMIT 1
+City Load (0.000689)   SELECT * FROM cities WHERE id = 1170 LIMIT 1
+Team Load (0.001622)   SELECT * FROM teams WHERE id = 132991 LIMIT 1
+Team Load (0.001059)   SELECT * FROM teams WHERE id = 132980 LIMIT 1
+Team Load (0.001117)   SELECT * FROM teams WHERE id = 129534 LIMIT 1
+Team Load (0.001104)   SELECT * FROM teams WHERE id = 126799 LIMIT 1
+Team Load (0.015325)   SELECT * FROM teams WHERE id = 124130 LIMIT 1
+Team Load (0.001067)   SELECT * FROM teams WHERE id = 121991 LIMIT 1
+Team Load (0.001169)   SELECT * FROM teams WHERE id = 121978 LIMIT 1
+Team Load (0.001264)   SELECT * FROM teams WHERE id = 121976 LIMIT 1
+Team Load (0.001131)   SELECT * FROM teams WHERE id = 121971 LIMIT 1
+Team Load (0.000970)   SELECT * FROM teams WHERE id = 121967 LIMIT 1
+Team Load (0.001507)   SELECT * FROM teams WHERE id = 121868 LIMIT 1
+Team Load (0.075690)   SELECT * FROM teams WHERE id = 69373 LIMIT 1
+Team Load (0.201582)   SELECT * FROM teams WHERE id = 69343 LIMIT 1
+Team Load (0.001294)   SELECT * FROM teams WHERE id = 65942 LIMIT 1
+Team Load (0.013834)   SELECT * FROM teams WHERE id = 65932 LIMIT 1
+Team Load (0.001222)   SELECT * FROM teams WHERE id = 27367 LIMIT 1
+Team Load (0.004668)   SELECT * FROM teams WHERE id = 42378 LIMIT 1
+Team Load (0.001271)   SELECT * FROM teams WHERE id = 27314 LIMIT 1
+Team Load (0.009752)   SELECT * FROM teams WHERE id = 27306 LIMIT 1
+TeamMember Count (0.001410)   SELECT COUNT(*) FROM team_members WHERE active_member = 1 and goal_is_complete = 1 and person_id = 2693 
+Person Load (0.017762)   SELECT p.*, count(*) as num_teams_in_common FROM people p, team_members tms, team_members tmp WHERE tmp.person_id = p.id AND tms.team_id = tmp.team_id AND tms.person_id = 2693 AND tms.active_member <> 0 AND tms.goal_is_complete = 0 AND tmp.person_id <> 2693 AND tmp.active_member <> 0 AND tmp.goal_is_complete = 0 GROUP BY p.id ORDER BY num_teams_in_common DESC, p.last_name
+Rendering layouts/default (200 OK)
+Completed in 1.102098 (0 reqs/sec) | Rendering: 0.695476 (63%) | DB: 0.486258 (44%)

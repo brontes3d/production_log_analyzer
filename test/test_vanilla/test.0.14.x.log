@@ -1,0 +1,4 @@
+Processing RssController#entries (for 10.43.199.12 at 2005-11-07 12:14:02) [GET]
+Parameters: {"rss/entries/goal.html/entries/goal"=>nil, "action"=>"entries", "id"=>"goal", "controller"=>"rss", "goal_id"=>"86381"}
+Rendering rss/rss2.0
+Completed in 0.00860 (116 reqs/sec) | DB: 0.00328 (38%) | 200 OK [http://www.43things.com/rss/entries/goal?goal_id=86381]

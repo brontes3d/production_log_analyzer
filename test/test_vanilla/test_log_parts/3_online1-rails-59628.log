@@ -1,0 +1,9 @@
+Processing RssController#uber (for 67.18.200.5 at Mon Mar 07 00:00:25 CST 2005)
+Parameters: {:id=>"author", :"rss/uber/author.html/uber/author"=>nil, :action=>"uber", :username=>"looch", :controller=>"rss"}
+Cookie set: auth=STUFF; path=/; expires=Thu, 05 Mar 2015 06:00:25 GMT
+Cookie set: ubid=STUFF; path=/; expires=Thu, 05 Mar 2015 06:00:25 GMT
+Browser Load (0.003963)   SELECT * FROM browsers WHERE ubid = 'STUFF' LIMIT 1
+Person Load (0.002445)   SELECT * FROM people WHERE username = 'looch' AND active = '1' LIMIT 1
+ProfileImage Load (0.001554)   SELECT * FROM profile_images WHERE id = 2782 LIMIT 1
+Rendering rss/rss2.0 (200 OK)
+Completed in 0.034519 (28 reqs/sec) | Rendering: 0.011770 (34%) | DB: 0.007962 (23%)

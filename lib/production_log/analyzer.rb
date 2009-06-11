@@ -182,13 +182,31 @@ class Analyzer
   # Processes the log file collecting statistics from each found LogEntry.
 
   def process
-    File.open @logfile_name do |fp|
-      LogParser.parse fp do |entry|
-        entry_page = entry.page
-        next if entry_page.nil?
-        @request_times[entry_page] << entry.request_time
-        @db_times[entry_page] << entry.db_time
-        @render_times[entry_page] << entry.render_time
+    if File.directory?(@logfile_name)
+      dir_path = @logfile_name
+      Dir.new(dir_path).each do |filename|
+        unless filename[0,1] == "."
+          file_path = File.join(dir_path, filename)
+          File.open file_path do |fp|
+            LogParser.parse fp do |entry|
+              entry_page = entry.page
+              next if entry_page.nil?
+              @request_times[entry_page] << entry.request_time
+              @db_times[entry_page] << entry.db_time
+              @render_times[entry_page] << entry.render_time
+            end
+          end          
+        end
+      end
+    else
+      File.open @logfile_name do |fp|
+        LogParser.parse fp do |entry|
+          entry_page = entry.page
+          next if entry_page.nil?
+          @request_times[entry_page] << entry.request_time
+          @db_times[entry_page] << entry.db_time
+          @render_times[entry_page] << entry.render_time
+        end
       end
     end
   end
