@@ -1,8 +1,4 @@
-require 'stringio'
-require 'tempfile'
-require 'test/unit'
-
-require 'production_log/action_grep'
+require File.dirname(__FILE__) + '/test_helper'
 
 class TestActionGrep < Test::Unit::TestCase
 

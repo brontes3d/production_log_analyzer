@@ -1,10 +1,4 @@
-$TESTING = true
-
-require 'tempfile'
-require 'test/unit'
-require 'stringio'
-
-require 'production_log/parser'
+require File.dirname(__FILE__) + '/test_helper'
 
 class TestLogEntry < Test::Unit::TestCase
 
@@ -283,12 +277,12 @@ Jan 03 12:24:24 duo2 rails[4277]: Completed in 0.00112 (896 reqs/sec) | DB: 0.00
     
     assert_equal 13, entries.length
     assert_equal 0.300741, entries.first.request_time
-    
+        
     redirect = entries[6]
     assert_equal 'TeamsController#progress', redirect.page
     assert_equal 0, redirect.render_time
     
-    last = entries.last
+    last = entries[11]    
     assert_equal 'PeopleController#progress', last.page
     assert_equal 0, last.request_time
   end

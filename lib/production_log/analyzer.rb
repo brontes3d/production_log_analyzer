@@ -309,7 +309,9 @@ class Analyzer
     text << nil
     text << "Slowest Total Render Times:"
     slowest_render_times(count).each do |time, name|
-      text << "\t#{name} took #{'%0.3f' % time}s"
+      unless ('%0.3f' % time) == "0.000"
+        text << "\t#{name} took #{'%0.3f' % time}s"
+      end
     end
     text << nil
 
