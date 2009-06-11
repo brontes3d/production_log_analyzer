@@ -1,0 +1,3 @@
+class PassengerLogPerProc
+  
+end
