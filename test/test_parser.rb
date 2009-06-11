@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/test_helper'
 
-class TestLogEntry < Test::Unit::TestCase
+class TestLogEntry < TestTwice
 
   def setup
     @entry = LogParser::LogEntry.new <<-EOF
@@ -18,7 +18,7 @@ Completed in 0.57672 (1 reqs/sec) | Rendering: 0.47752 (82%) | DB: 0.08223 (14%)
 EOF
   end
 
-  def test_parse
+  define_method :test_parse do
     request = <<-EOF
 Processing RssController#uber (for 67.18.200.5 at Mon Mar 07 00:00:25 CST 2005)
 Parameters: {:id=>"author", :"rss/uber/author.html/uber/author"=>nil, :action=>"uber", :username=>"looch", :controller=>"rss"}
@@ -42,11 +42,11 @@ EOF
     assert_equal 0.034519, entry.request_time
   end
 
-  def test_kong_style_page
+  define_method :test_kong_style_page do
     assert_equal "FeaturedGamesController#index.html", @kong_entry.page
   end
 
-  def test_bad_kong_entry
+  define_method :test_bad_kong_entry do
     assert_nothing_raised do
       bad = LogParser::LogEntry.new <<-EOF
 Completed in 0.00904 (110 reqs/sec) | Rendering: 0.00572 (63%) | DB: 0.00093 (10%) | Rows: 2 | Queries: 2 | Guest | Method: GET | Request Size: 0 | Request Type: unknown | Response Format: Accept: application/xhtml+xml | Response Size: 8637 | Processed: MyCardsController#show | 200 OK [http://www.kongregate.com/accounts/orc22/cards/688263]
@@ -54,42 +54,42 @@ EOF
     end
   end
 
-  def test_row_count
+  define_method :test_row_count do
     assert_equal 75, @kong_entry.row_count
   end
 
-  def test_query_count
+  define_method :test_query_count do
     assert_equal 32, @kong_entry.query_count
   end
 
-  def test_request_size
+  define_method :test_request_size do
     assert_equal 0, @kong_entry.request_size
   end
 
-  def test_response_size
+  define_method :test_response_size do
     assert_equal 71604, @kong_entry.response_size
   end
 
-  def test_page
+  define_method :test_page do
     assert_equal "TwinklerController#index", @entry.page
   end
 
-  def test_ip
+  define_method :test_ip do
     assert_equal "81.109.96.173", @entry.ip
   end
 
-  def test_time
+  define_method :test_time do
     assert_equal "Wed Dec 01 16:01:56 CST 2004", @entry.time
   end
 
-  def test_queries
+  define_method :test_queries do
     expected = []
     expected << ["Browser Load First", 0.001114]
     expected << ["Goal Count", 0.001762]
     assert_equal expected, @entry.queries
   end
 
-  def test_request_time
+  define_method :test_request_time do
     assert_equal 0.616122, @entry.request_time
 
     @entry = LogParser::LogEntry.new "Processing TwinklerController#add_thing (for 144.164.232.114 at Wed Dec 01 16:01:56 CST 2004)
@@ -101,7 +101,7 @@ Completed in 0.261485 (3 reqs/sec) | DB: 0.009325 (3%)"
     assert_equal 13/1000.0, @entry.request_time
   end
 
-  def test_render_time
+  define_method :test_render_time do
     assert_equal 0.242475, @entry.render_time
 
     @entry = LogParser::LogEntry.new "Processing TwinklerController#add_thing (for 144.164.232.114 at Wed Dec 01 16:01:56 CST 2004)
@@ -113,7 +113,7 @@ Completed in 0.261485 (3 reqs/sec) | DB: 0.009325 (3%)"
     assert_equal 12/1000.0, @entry.render_time
   end
 
-  def test_db_time
+  define_method :test_db_time do
     assert_equal 0.002876, @entry.db_time
 
     @entry = LogParser::LogEntry.new 'Completed in 13ms (View: 12, DB: 1) | 200 OK [http://www.example.com/]'
@@ -122,9 +122,9 @@ Completed in 0.261485 (3 reqs/sec) | DB: 0.009325 (3%)"
 
 end
 
-class TestLogParser < Test::Unit::TestCase
+class TestLogParser < TestTwice
 
-  def test_class_parse_with_only_completed_at
+  define_method :test_class_parse_with_only_completed_at do
     log = StringIO.new <<-EOF
 Jul 23 12:08:50 trunk rails[27221]: Completed in 0.00507 (197 reqs/sec) | Rendering: 0.00027 (5%) | DB: 0.00055 (10%) | Rows: 88 | Queries: 1 | Guest | Method: GET | Request Size: 0 | Request Type: unknown | Response Format: all | Response Size: 3696 | Processed: RoomsController#list | 200 OK [http://kongregate.com/rooms/list]
 Jul 23 12:09:18 trunk rails[27221]: Completed in 0.11838 (8 reqs/sec) | Rendering: 0.10371 (87%) | DB: 0.00671 (5%) | Rows: 103 | Queries: 20 | Guest | Method: GET | Request Size: 0 | Request Type: unknown | Response Format: html | Response Size: 27254 | Processed: CategoriesController#show | 200 OK [http://kongregate.com/strategy-defense-games]
@@ -138,7 +138,7 @@ Jul 23 12:09:18 trunk rails[27221]: Completed in 0.11838 (8 reqs/sec) | Renderin
     assert_equal 2, entries.length
   end
 
-  def test_class_parse
+  define_method :test_class_parse do
     log = StringIO.new <<-EOF
 Mar  7 00:00:25 online1 rails[59628]: Processing RssController#uber (for 67.18.200.5 at Mon Mar 07 00:00:25 CST 2005)
 Mar  7 00:00:25 online1 rails[59628]: Parameters: {:id=>"author", :"rss/uber/author.html/uber/author"=>nil, :action=>"uber", :username=>"looch", :controller=>"rss"}
@@ -161,7 +161,7 @@ Mar  7 00:00:25 online1 rails[59628]: Completed in 0.034519 (28 reqs/sec) | Rend
     assert_equal 'RssController#uber', entries.first.page
   end
 
-  def test_class_parse_components
+  define_method :test_class_parse_components do
     log = StringIO.new <<-EOF
 Jul 11 10:05:20 www rails[61243]: Processing ChatroomsController#launch (for 213.152.37.169 at Mon Jul 11 10:05:20 CDT 2005)
 Jul 11 10:05:20 www rails[61243]: Start rendering component ({:action=>"online_count", :controller=>"members"}):
@@ -191,7 +191,7 @@ Jul 11 10:05:28 www rails[61243]: Completed in 8.65005 (0 reqs/sec) | Rendering:
     assert_equal 8.65005, entries.first.request_time
   end
 
-  def test_class_parse_entries_with_pre_processing_garbage
+  define_method :test_class_parse_entries_with_pre_processing_garbage do
     log = StringIO.new <<-EOF
 Jan 03 12:51:34 duo2 rails[4347]: [4;36;1mFont Load (0.000475)[0m   [0;1mSELECT * FROM fonts ORDER BY name [0m
 Jan 03 12:51:34 duo2 rails[4347]: Processing StylesheetsController#show (for 127.0.0.1 at 2007-01-03 12:51:34) [GET]
@@ -209,7 +209,7 @@ Jan 03 12:51:34 duo2 rails[4347]: Completed in 0.00807 (123 reqs/sec) | Renderin
     assert_equal 0.00807, entries.first.request_time
   end
 
-  def test_class_parse_rails_engines_plugin
+  define_method :test_class_parse_rails_engines_plugin do
     log = StringIO.new <<-EOF
 Jan 03 12:24:21 duo2 rails[4277]: Trying to start engine 'login_engine' from '/Users/topfunky/web/rails/repos/roughunderbelly/vendor/plugins/login_engine'
 Jan 03 12:24:21 duo2 rails[4277]: adding /Users/topfunky/web/rails/repos/roughunderbelly/vendor/plugins/login_engine/lib/login_engine to the load path
@@ -267,7 +267,7 @@ Jan 03 12:24:24 duo2 rails[4277]: Completed in 0.00112 (896 reqs/sec) | DB: 0.00
     assert_equal 0.00112, entries.first.request_time
   end
 
-  def test_class_parse_multi
+  define_method :test_class_parse_multi do
     entries = []
     File.open "#{File.dirname(__FILE__)}/test_syslogs/test.syslog.log" do |fp|
       LogParser.parse fp do |entry|
@@ -287,7 +287,7 @@ Jan 03 12:24:24 duo2 rails[4277]: Completed in 0.00112 (896 reqs/sec) | DB: 0.00
     assert_equal 0, last.request_time
   end
 
-  def test_class_parse_0_14_x
+  define_method :test_class_parse_0_14_x do
     entries = []
     File.open "#{File.dirname(__FILE__)}/test_syslogs/test.syslog.0.14.x.log" do |fp|
       LogParser.parse fp do |entry|

@@ -1,27 +1,27 @@
 require File.dirname(__FILE__) + '/test_helper'
 
-class TestEnumerable < Test::Unit::TestCase
+class TestEnumerable < TestTwice
 
-  def test_sum
+  define_method :test_sum do
     assert_equal 45, (1..9).sum
   end
 
-  def test_average
+  define_method :test_average do
     # Ranges don't have a length
     assert_in_delta 5.0, (1..9).to_a.average, 0.01
   end
 
-  def test_sample_variance
+  define_method :test_sample_variance do
     assert_in_delta 6.6666, (1..9).to_a.sample_variance, 0.0001
   end
 
-  def test_standard_deviation
+  define_method :test_standard_deviation do
     assert_in_delta 2.5819, (1..9).to_a.standard_deviation, 0.0001
   end
 
 end
 
-class TestSizedList < Test::Unit::TestCase
+class TestSizedList < TestTwice
 
   def setup
     @list = SizedList.new 10 do |arr,|
@@ -30,7 +30,7 @@ class TestSizedList < Test::Unit::TestCase
     end
   end
 
-  def test_append
+  define_method :test_append do
     assert_equal [], @list.entries
 
     (1..10).each { |i| @list << i }
@@ -44,13 +44,13 @@ class TestSizedList < Test::Unit::TestCase
 
 end
 
-class TestSlowestTimes < Test::Unit::TestCase
+class TestSlowestTimes < TestTwice
 
   def setup
     @list = SlowestTimes.new 10
   end
 
-  def test_that_it_works
+  define_method :test_that_it_works do
     expected = []
 
     10.downto(1) do |i|
@@ -74,14 +74,14 @@ class TestSlowestTimes < Test::Unit::TestCase
 
 end
 
-class TestAnalyzer < Test::Unit::TestCase
+class TestAnalyzer < TestTwice
 
   def setup
     @analyzer = Analyzer.new "#{File.dirname(__FILE__)}/test_syslogs/test.syslog.log"
     @analyzer.process
   end
 
-  def test_self_email
+  define_method :test_self_email do
     email = Analyzer.email("#{File.dirname(__FILE__)}/test_syslogs/test.syslog.log", 'devnull@robotcoop.com',
                            nil, 1)
     expected = <<-EOF
@@ -134,7 +134,7 @@ Slowest Total Render Times:
     assert_mostly_equal expected, email
   end
 
-  def test_self_envelope
+  define_method :test_self_envelope do
     expected = [
       "Subject: pl_analyze",
       "To: devnull@example.com",
@@ -144,7 +144,7 @@ Slowest Total Render Times:
     assert_equal expected.sort, Analyzer.envelope('devnull@example.com').sort
   end
 
-  def test_self_envelope_subject
+  define_method :test_self_envelope_subject do
     expected = [
       "Subject: happy fancy boom",
       "To: devnull@example.com",
@@ -155,23 +155,23 @@ Slowest Total Render Times:
                  Analyzer.envelope('devnull@example.com', 'happy fancy boom').sort)
   end
 
-  def test_average_db_time
+  define_method :test_average_db_time do
     assert_in_delta 0.4023761, @analyzer.average_db_time, 0.0000001
   end
 
-  def test_average_render_time
+  define_method :test_average_render_time do
     assert_in_delta 0.3015584, @analyzer.average_render_time, 0.0000001
   end
 
-  def test_average_request_time
+  define_method :test_average_request_time do
     assert_in_delta 0.6338176, @analyzer.average_request_time, 0.0000001
   end
 
-  def test_db_time_std_dev
+  define_method :test_db_time_std_dev do
     assert_in_delta 0.3941380, @analyzer.db_time_std_dev, 0.0000001
   end
 
-  def test_db_times_summary
+  define_method :test_db_times_summary do
     expected = <<EOF.strip
 DB Times Summary:         	Count	Avg	Std Dev	Min	Max
 ALL REQUESTS:             	11	0.366	0.393	0.000	1.144
@@ -186,7 +186,7 @@ EOF
     assert_mostly_equal expected, @analyzer.db_times_summary
   end
 
-  def test_empty_syslog
+  define_method :test_empty_syslog do
     analyzer = Analyzer.new "#{File.dirname(__FILE__)}/test_syslogs/test.syslog.empty.log"
     assert_nothing_raised do
       analyzer.process
@@ -195,11 +195,11 @@ EOF
     assert_equal "No requests to analyze", analyzer.report(1)
   end
 
-  def test_logfile_name
+  define_method :test_logfile_name do
     assert_equal "#{File.dirname(__FILE__)}/test_syslogs/test.syslog.log", @analyzer.logfile_name
   end
 
-  def test_longest_request_name
+  define_method :test_longest_request_name do
     assert_equal false, @analyzer.instance_variables.include?('@longest_req')
 
     request_times = {
@@ -215,19 +215,19 @@ EOF
     assert_equal 26, @analyzer.longest_request_name
   end
 
-  def test_pad_request_name
+  define_method :test_pad_request_name do
     assert_equal 26, @analyzer.longest_request_name
     assert_equal("PeopleController#view:    ",
                  @analyzer.pad_request_name("PeopleController#view"))
   end
 
-  def test_pad_request_name_nil
+  define_method :test_pad_request_name_nil do
     assert_equal 26, @analyzer.longest_request_name
     assert_equal("Unknown:                  ",
                  @analyzer.pad_request_name(nil))
   end
 
-  def test_pad_request_name_short
+  define_method :test_pad_request_name_short do
     analyzer = Analyzer.new "#{File.dirname(__FILE__)}/test_syslogs/test.syslog.1.2.shortname.log"
     analyzer.process
     longer_request_name_value = " " * (analyzer.longest_request_name + 1)
@@ -237,7 +237,7 @@ EOF
     assert_equal longer_request_name_value + ":", analyzer.pad_request_name(longer_request_name_value)
   end
 
-  def test_process
+  define_method :test_process do
     expected_request_times = {
       "PeopleController#view"     => [1.102098, 0.36021],
       "ThingsController#view"     => [0.396183, 0.49176, 1.259728],
@@ -266,11 +266,11 @@ EOF
     assert_equal expected_render_times, @analyzer.render_times
   end
 
-  def test_render_time_std_dev
+  define_method :test_render_time_std_dev do
     assert_in_delta 0.2513925, @analyzer.render_time_std_dev, 0.0000001
   end
 
-  def test_render_times_summary
+  define_method :test_render_times_summary do
     expected = <<EOF.strip
 Render Times Summary:     	Count	Avg	Std Dev	Min	Max
 ALL REQUESTS:             	11	0.219	0.253	0.000	0.695
@@ -285,7 +285,7 @@ EOF
     assert_mostly_equal expected, @analyzer.render_times_summary
   end
 
-  def test_report
+  define_method :test_report do
     expected = <<-EOF
 Request Times Summary:    	Count	Avg	Std Dev	Min	Max
 ALL REQUESTS:             	11	0.576	0.508	0.000	1.470
@@ -356,11 +356,11 @@ Slowest Total Render Times:
     assert_mostly_equal expected, @analyzer.report(10)
   end
 
-  def test_request_time_std_dev
+  define_method :test_request_time_std_dev do
     assert_in_delta 0.4975667, @analyzer.request_time_std_dev, 0.0000001
   end
 
-  def test_request_times_summary
+  define_method :test_request_times_summary do
     expected = <<EOF.strip
 Request Times Summary:    	Count	Avg	Std Dev	Min	Max
 ALL REQUESTS:             	11	0.576	0.508	0.000	1.470
@@ -375,7 +375,7 @@ EOF
     assert_mostly_equal expected, @analyzer.request_times_summary
   end
 
-  def test_slowest_db_times
+  define_method :test_slowest_db_times do
     times = @analyzer.slowest_db_times 3
     assert_equal 3, times.length
     expected = [
@@ -386,7 +386,7 @@ EOF
     assert_equal expected, times
   end
 
-  def test_slowest_request_times
+  define_method :test_slowest_request_times do
     times = @analyzer.slowest_request_times 3
     assert_equal 3, times.length
     expected = [
@@ -397,7 +397,7 @@ EOF
     assert_equal expected, times
   end
 
-  def test_slowest_render_times
+  define_method :test_slowest_render_times do
     times = @analyzer.slowest_render_times 3
     assert_equal 3, times.length
     expected = [
