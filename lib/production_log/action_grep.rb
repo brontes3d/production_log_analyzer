@@ -15,6 +15,7 @@ class << ActionGrep
     comp_count = Hash.new 0
 
     File.open file_name do |fp|
+      LogParser.detect_mode(fp)
       fp.each_line do |line|
         bucket, data = LogParser.extract_bucket_and_data(line)
         next if !bucket

@@ -10,7 +10,7 @@
 module LogParser
   
   def self.syslog_mode?
-    @syslog_mode    
+    @syslog_mode
   end
   
   def self.syslog_mode!
@@ -172,6 +172,22 @@ module LogParser
     end    
   end
 
+  def self.detect_mode(stream)
+    lines_read = []
+    while(!stream.eof? && lines_read.size < 5)
+      lines_read << stream.readline
+    end
+    stream.rewind
+    
+    lines_read.each do |line|
+      line =~ / ([^ ]+) ([^ ]+)\[(\d+)\]: (.*)/
+      if $4        
+        return syslog_mode!
+      end
+    end
+    return vanilla_mode!
+  end
+
   ##
   # Parses IO stream +stream+, creating a LogEntry for each recognizable log
   # entry.
@@ -182,6 +198,8 @@ module LogParser
   def self.parse(stream) # :yields: log_entry
     buckets = Hash.new { |h,k| h[k] = [] }
     comp_count = Hash.new 0
+    
+    LogParser.detect_mode(stream)
     
     stream.each_line do |line|
       bucket, data = LogParser.extract_bucket_and_data(line)

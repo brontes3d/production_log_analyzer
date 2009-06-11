@@ -51,10 +51,10 @@ unless defined?(TestTwice)
     
     def setup
       if self.class.name.index("SansSysLog")
-        LogParser.vanilla_mode!
+        # LogParser.vanilla_mode!
         @test_sys_log_style = false
       else
-        LogParser.syslog_mode!
+        # LogParser.syslog_mode!
         @test_sys_log_style = true
       end
       local_setup
