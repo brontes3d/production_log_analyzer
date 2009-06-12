@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/test_helper'
 class TestEnumerable < TestTwice
   
   twice_test :test_sum do
-    assert_equal 45, (1..9).sum
+    assert_equal 45, (1..9).to_a.sum
   end
 
   twice_test :test_average do

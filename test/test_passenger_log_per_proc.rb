@@ -3,28 +3,30 @@ require File.dirname(__FILE__) + '/test_helper'
 require 'rubygems'
 require 'active_support'
 require 'phusion_passenger/rack/request_handler'
-# require 'phusion_passenger/railz/application_spawner'
 
 require 'passenger_log_per_proc'
 
 SCRATCH_DIR = File.join(Dir.tmpdir, "passenger_log_proc_test")
-
-FileUtils.rm_rf(SCRATCH_DIR)
-
-FileUtils.mkdir_p(SCRATCH_DIR)
-
 RAILS_LOG_LOCATION = File.join(SCRATCH_DIR, "test_passenger_rails.log")
 RAILS_DEFAULT_LOGGER = ActiveSupport::BufferedLogger.new(RAILS_LOG_LOCATION)
-RAILS_DEFAULT_LOGGER.debug("")
 
 class TestPassengerLogPerProc < Test::Unit::TestCase
   
+  def setup
+    RAILS_DEFAULT_LOGGER.debug("")
+    # FileUtils.mkdir_p(SCRATCH_DIR)
+  end
+  
+  def teardown
+    FileUtils.rm_rf(SCRATCH_DIR)    
+  end
+  
   def run_a_request(count = 1)
     Process.fork do
-      count.times do
+      count.times do |i|
         r, w = IO.pipe    
         req_handler = PhusionPassenger::Rack::RequestHandler.new(w, Proc.new{ 
-          RAILS_DEFAULT_LOGGER.debug("hi from #{Process.pid}")
+          RAILS_DEFAULT_LOGGER.debug("hi #{i} from #{Process.pid}")
           [200, {}, "hi"] })
         env = {}
         env["PATH_INFO"] = "/"
@@ -52,7 +54,13 @@ class TestPassengerLogPerProc < Test::Unit::TestCase
     assert File.exists?(RAILS_LOG_LOCATION), "Expected file to exist #{RAILS_LOG_LOCATION}"
     rails_log_contents = File.read(RAILS_LOG_LOCATION)
     
-    puts "rails log: \n" + rails_log_contents
+    # puts "rails log: \n" + rails_log_contents
+    rails_log_lines = rails_log_contents.split("\n")
+    assert_equal(6, rails_log_lines.size, "Expected 6 lines, got #{rails_log_contents}")
+    
+    assert_equal(["hi 0 from #{pid_before}", "hi 0 from #{pid_after1}", "hi 1 from #{pid_after1}", 
+                  "hi 0 from #{pid_after2}", "hi 1 from #{pid_after2}"].sort,
+                  rails_log_lines[1,7].sort)
     
     proc1_file_loc = "#{per_proc_logs_dir}/test_#{pid_after1}.log"
     proc2_file_loc = "#{per_proc_logs_dir}/test_#{pid_after2}.log"
@@ -63,14 +71,18 @@ class TestPassengerLogPerProc < Test::Unit::TestCase
     proc1_file_contents = File.read(proc1_file_loc)
     proc2_file_contents = File.read(proc2_file_loc)
 
-    puts "proc1_file_contents log: \n" + proc1_file_contents
-    puts "proc2_file_contents log: \n" + proc2_file_contents
+    # puts "proc1_file_contents log: \n" + proc1_file_contents
+    proc1_log_lines = proc1_file_contents.split("\n").reject{|l| l.match(/RECEIVE_REQUEST/) || l.match(/RESPONSE_SENT/) }
 
-    # puts "ok"
-    # 
-    # puts "SCRATCH_DIR : #{SCRATCH_DIR}"
-    # puts `ls #{SCRATCH_DIR}`.inspect
-    # puts `ls #{per_proc_logs_dir}`.inspect
+    assert_equal(["Passenger logging started", "hi 0 from #{pid_after1}", "", "hi 1 from #{pid_after1}"],
+        proc1_log_lines[1,5])
+
+
+    # puts "proc2_file_contents log: \n" + proc2_file_contents
+    proc2_log_lines = proc2_file_contents.split("\n").reject{|l| l.match(/RECEIVE_REQUEST/) || l.match(/RESPONSE_SENT/) }
+
+    assert_equal(["Passenger logging started", "hi 0 from #{pid_after2}", "", "hi 1 from #{pid_after2}"],
+        proc2_log_lines[1,5])
   end
   
 end
