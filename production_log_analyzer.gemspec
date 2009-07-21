@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.files = ["History.txt", "LICENSE.txt", "Manifest.txt", "README.txt", "Rakefile", "bin/action_errors", 
     "bin/action_grep", "bin/pl_analyze", "lib/production_log/action_grep.rb", "lib/production_log/analyzer.rb", 
     "lib/production_log/parser.rb", "test/test_action_grep.rb", "test/test_analyzer.rb", "test/test_parser.rb", 
-    "test/test_helper.rb", "lib/passenger_log_per_proc.rb", "test/test_passenger_log_per_proc.rb",
+    "test/test_helper.rb", "lib/rack_logging_per_proc.rb", "test/test_rack_logging_per_proc.rb",
     "test/test_syslogs/test.syslog.0.14.x.log", "test/test_syslogs/test.syslog.1.2.shortname.log", "test/test_syslogs/test.syslog.empty.log", "test/test_syslogs/test.syslog.log", "test/test_vanilla/test.0.14.x.log", "test/test_vanilla/test.1.2.shortname.log", "test/test_vanilla/test.empty.log", "test/test_vanilla/test.log", "test/test_vanilla/test_log_parts/1_online1-rails-59600.log", "test/test_vanilla/test_log_parts/2_online2-rails-59628.log", "test/test_vanilla/test_log_parts/3_online1-rails-59628.log", "test/test_vanilla/test_log_parts/4_online1-rails-59645.log", "test/test_vanilla/test_log_parts/5_online1-rails-59629.log", "test/test_vanilla/test_log_parts/6_online1-rails-60654.log", "test/test_vanilla/test_log_parts/7_online1-rails-59627.log", "test/test_vanilla/test_log_parts/8_online1-rails-59635.log"]
   s.has_rdoc = true
   s.homepage = %q{http://seattlerb.rubyforge.org/production_log_analyzer}
