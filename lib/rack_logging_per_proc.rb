@@ -15,6 +15,7 @@ class RackLoggingPerProc
   def initialize app, log_path_prefix
     @app = app
     @log_path_prefix = log_path_prefix
+    @process_logger = false
   end
 
   def call env
