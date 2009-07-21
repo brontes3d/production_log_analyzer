@@ -2,12 +2,11 @@ require File.dirname(__FILE__) + '/test_helper'
 
 require 'rubygems'
 require 'active_support'
-require 'phusion_passenger/rack/request_handler'
 
-require 'passenger_log_per_proc'
+require 'rack_logging_per_proc'
 
-SCRATCH_DIR = File.join(Dir.tmpdir, "passenger_log_proc_test")
-RAILS_LOG_LOCATION = File.join(SCRATCH_DIR, "test_passenger_rails.log")
+SCRATCH_DIR = File.join(Dir.tmpdir, "rack_logging_proc_test")
+RAILS_LOG_LOCATION = File.join(SCRATCH_DIR, "test_rack_rails.log")
 RAILS_DEFAULT_LOGGER = ActiveSupport::BufferedLogger.new(RAILS_LOG_LOCATION)
 
 class TestPassengerLogPerProc < Test::Unit::TestCase
@@ -21,32 +20,33 @@ class TestPassengerLogPerProc < Test::Unit::TestCase
     FileUtils.rm_rf(SCRATCH_DIR)    
   end
   
-  def run_a_request(count = 1)
+  def run_a_request(app, count = 1)
     Process.fork do
       count.times do |i|
-        r, w = IO.pipe    
-        req_handler = PhusionPassenger::Rack::RequestHandler.new(w, Proc.new{ 
-          RAILS_DEFAULT_LOGGER.debug("hi #{i} from #{Process.pid}")
-          [200, {}, "hi"] })
         env = {}
         env["PATH_INFO"] = "/"
-        input, output = IO.pipe
-        req_handler.send(:process_request, env, input, output)
+        env["count"] = i
+        app.call(env)
       end
     end
   end
   
-  def test_todo    
-    pid_before = run_a_request
+  def test_todo
+    app = lambda do |env| 
+      RAILS_DEFAULT_LOGGER.debug("hi #{env['count']} from #{Process.pid}")
+      [200, {}, "hi"]
+    end
+    
+    pid_before = run_a_request(app)
 
     Process.waitpid(pid_before)
     
-    per_proc_logs_dir = File.join(SCRATCH_DIR, "passenger")
+    per_proc_logs_dir = File.join(SCRATCH_DIR, "per_proc")
     FileUtils.mkdir_p(per_proc_logs_dir)
-    PassengerLogPerProc.enable("#{per_proc_logs_dir}/test")    
-    
-    pid_after1 = run_a_request(2)
-    pid_after2 = run_a_request(2)
+    middleware_instance = RackLoggingPerProc.new(app, "#{per_proc_logs_dir}/test")
+        
+    pid_after1 = run_a_request(middleware_instance, 2)
+    pid_after2 = run_a_request(middleware_instance, 2)
     
     Process.waitpid(pid_after1)
     Process.waitpid(pid_after2)
@@ -74,14 +74,14 @@ class TestPassengerLogPerProc < Test::Unit::TestCase
     # puts "proc1_file_contents log: \n" + proc1_file_contents
     proc1_log_lines = proc1_file_contents.split("\n").reject{|l| l.match(/RECEIVE_REQUEST/) || l.match(/RESPONSE_SENT/) }
 
-    assert_equal(["Passenger logging started", "hi 0 from #{pid_after1}", "", "hi 1 from #{pid_after1}"],
+    assert_equal(["Process logging started", "hi 0 from #{pid_after1}", "", "hi 1 from #{pid_after1}"],
         proc1_log_lines[1,5])
 
 
     # puts "proc2_file_contents log: \n" + proc2_file_contents
     proc2_log_lines = proc2_file_contents.split("\n").reject{|l| l.match(/RECEIVE_REQUEST/) || l.match(/RESPONSE_SENT/) }
 
-    assert_equal(["Passenger logging started", "hi 0 from #{pid_after2}", "", "hi 1 from #{pid_after2}"],
+    assert_equal(["Process logging started", "hi 0 from #{pid_after2}", "", "hi 1 from #{pid_after2}"],
         proc2_log_lines[1,5])
   end
   
