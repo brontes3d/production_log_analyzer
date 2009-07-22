@@ -1,4 +1,4 @@
-#!/bin/env ruby -w
+#!/usr/bin/env ruby -w
 
 $:.unshift "#{File.dirname(__FILE__)}/../lib/"
 require "production_log/analyzer"
